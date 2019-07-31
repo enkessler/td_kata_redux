@@ -50,55 +50,59 @@ module Kata
             when '   ' +
                  '  |' +
                  '  |'
-              1
+              '1'
             when ' _ ' +
                  ' _|' +
                  '|_ '
-              2
+              '2'
             when ' _ ' +
                  ' _|' +
                  ' _|'
-              3
+              '3'
             when '   ' +
                  '|_|' +
                  '  |'
-              4
+              '4'
             when ' _ ' +
                  '|_ ' +
                  ' _|'
-              5
+              '5'
             when ' _ ' +
                  '|_ ' +
                  '|_|'
-              6
+              '6'
             when ' _ ' +
                  '  |' +
                  '  |'
-              7
+              '7'
             when ' _ ' +
                  '|_|' +
                  '|_|'
-              8
+              '8'
             when ' _ ' +
                  '|_|' +
                  ' _|'
-              9
+              '9'
             else
-              raise "Unknown character string: '#{digit}'"
+              '?'
           end
-        end.join.to_i
+        end.join
       end
     end
 
     def validate_account_numbers(account_numbers)
       account_numbers.map do |account_number|
-        reversed_account_number_digits = account_number.to_s.reverse.chars.map(&:to_i)
+        if account_number.include?('?')
+          'illegible'
+        else
+          reversed_account_number_digits = account_number.reverse.chars.map(&:to_i)
 
-        v1    = Vector[*reversed_account_number_digits]
-        v2    = Vector[1, 2, 3, 4, 5, 6, 7, 8, 9]
-        valid = (v1.inner_product(v2) % 11) == 0
+          v1    = Vector[*reversed_account_number_digits]
+          v2    = Vector[1, 2, 3, 4, 5, 6, 7, 8, 9]
+          valid = (v1.inner_product(v2) % 11) == 0
 
-        valid ? 'valid' : 'invalid'
+          valid ? 'valid' : 'invalid'
+        end
       end
     end
 

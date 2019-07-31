@@ -11,22 +11,33 @@ RSpec.describe 'the executable' do
                                                   text:      ['    _  _     _  _  _  _  _ ',
                                                               '  | _| _||_||_ |_   ||_||_|',
                                                               '  ||_  _|  | _||_|  ||_| _|',
+                                                              '',
+                                                              '    _  _     _  _  _  _  _ ',
+                                                              '  | _| _||_||_ |_   ||_||_|',
+                                                              '  ||_  _|  | _||_|  ||_||_|',
+                                                              '',
+                                                              '    _  _     _  _  _  _  _ ',
+                                                              '  | _| _||_||_ |_   ||_||_|',
+                                                              '   |_  _|  | _||_|  ||_| _|',
                                                               ''].join("\n")) }
+  let(:output_file) { "#{test_directory}/processed_accounts.dat" }
 
   let(:executable_path) { "#{__dir__}/../../exe/process_accounts.rb" }
-  let(:command) { "bundle exec ruby #{executable_path} #{input_file}" }
+  let(:command) { "bundle exec ruby #{executable_path} #{input_file} #{output_file}" }
 
-  let(:results) { std_out, std_err, status = [nil, nil, nil]
+  let!(:results) { std_out, std_err, status = [nil, nil, nil]
 
-                  Dir.chdir(test_directory) do
-                    std_out, std_err, status = Open3.capture3(command)
-                  end
+                   Dir.chdir(test_directory) do
+                     std_out, std_err, status = Open3.capture3(command)
+                   end
 
-                  { std_out: std_out, std_err: std_err, status: status } }
-
+                   { std_out: std_out, std_err: std_err, status: status } }
 
   it 'processes a file of scanned account numbers to regular numbers' do
-    expect(results[:std_out]).to eq("123456789 valid\n")
+    expect(File.read(output_file)).to eq(['123456789',
+                                          '123456788 ERR',
+                                          '?23456789 ILL',
+                                          ''].join("\n"))
   end
 
 end
