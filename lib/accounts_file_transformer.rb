@@ -1,3 +1,5 @@
+require 'matrix'
+
 module Kata
   class AccountsFileTransformer
 
@@ -7,10 +9,11 @@ module Kata
 
 
     def process_accounts_file(file_path)
-      account_entries = extract_account_entries(file_path)
-      account_numbers = transform_account_entries(account_entries)
+      account_entries    = extract_account_entries(file_path)
+      account_numbers    = transform_account_entries(account_entries)
+      number_validations = validate_account_numbers(account_numbers)
 
-      account_numbers
+      account_numbers.zip(number_validations)
     end
 
 
@@ -85,7 +88,18 @@ module Kata
           end
         end.join.to_i
       end
+    end
 
+    def validate_account_numbers(account_numbers)
+      account_numbers.map do |account_number|
+        reversed_account_number_digits = account_number.to_s.reverse.chars.map(&:to_i)
+
+        v1    = Vector[*reversed_account_number_digits]
+        v2    = Vector[1, 2, 3, 4, 5, 6, 7, 8, 9]
+        valid = (v1.inner_product(v2) % 11) == 0
+
+        valid ? 'valid' : 'invalid'
+      end
     end
 
   end

@@ -26,7 +26,7 @@ RSpec.describe 'the executable' do
 
 
   it 'processes a file of scanned account numbers to regular numbers' do
-    expect(results[:std_out]).to eq("123456789\n")
+    expect(results[:std_out]).to eq("123456789 valid\n")
   end
 
 end
